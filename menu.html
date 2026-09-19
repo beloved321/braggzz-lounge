@@ -112,9 +112,10 @@
   .events-head p{ font-size:22px; letter-spacing:0.4px; }
   .events-slider{ display:flex; flex-direction:column; gap:40px; align-items:center; }
   .events-track-wrap{ width:100%; overflow:hidden; }
-  .events-track{ display:flex; gap:16px; transition:transform .4s ease; width:max-content; }
+  .events-track{ display:flex; gap:16px; width:max-content; margin:0 auto; }
   .events-track img{ width:420px; height:474px; object-fit:cover; border-radius:4px; flex-shrink:0; }
-  .events-nav{ display:flex; align-items:center; gap:32px; width:100%; max-width:640px; justify-content:center; }
+  .events-nav{ display:grid; grid-template-columns:56px 1fr 56px; align-items:center; width:100%; max-width:640px; gap:16px; }
+  .events-arrow{ justify-self:center; }
   .events-arrow{ font-size:28px; color:var(--ink); background:none; }
   .events-caption{ text-align:center; }
   .events-caption h3{ font-size:clamp(24px,3vw,36px); font-weight:400; letter-spacing:0.6px; }
@@ -197,7 +198,6 @@
   <div class="mobile-nav-top">
     <div class="logo">
       <img src="images/braggzz-logo.png" alt="Braggzz Lounge" class="logo-badge-img">
-      <span class="logo-text">BRAGGZZ LOUNGE</span>
     </div>
     <button class="mobile-nav-close" id="closeNav" aria-label="Close menu">&times;</button>
   </div>
@@ -213,7 +213,6 @@
     <button class="hamburger" id="openNav" aria-label="Open menu"><span></span><span></span><span></span></button>
     <a href="index.html" class="logo">
       <img src="images/braggzz-logo.png" alt="Braggzz Lounge" class="logo-badge-img">
-      <span class="logo-text">BRAGGZZ LOUNGE</span>
     </a>
     <a href="index.html#book" class="btn btn-outline-light btn-small">Book a Table</a>
   </div>
@@ -577,25 +576,26 @@
 
   /* ---------- Events carousel ---------- */
   const events = [
-    { title: "Sunday Vibes Family Buffet", date: "Every Sunday, 3:00 PM" },
-    { title: "Ladies & Karaoke Night", date: "Every Wednesday, 8:00 PM" },
-    { title: "Freaky Friday", date: "Every Friday, 10:00 PM" }
+    { title: "Sunday Vibes Family Buffet", date: "Every Sunday, 3:00 PM", img: "images/sunday-vibes.png" },
+    { title: "Ladies & Karaoke Night", date: "Every Wednesday, 8:00 PM", img: "images/karaoke-night.png" },
+    { title: "Freaky Friday", date: "Every Friday, 10:00 PM", img: "images/freaky-friday.png" }
   ];
   let eventIndex = 1;
   const eventTitle = document.getElementById('eventTitle');
   const eventDate = document.getElementById('eventDate');
   const eventsTrack = document.getElementById('eventsTrack');
-  const cardWidth = 420 + 16;
 
   function updateEvents(){
-    eventTitle.textContent = events[eventIndex].title;
-    eventDate.textContent = events[eventIndex].date;
-    document.getElementById('eventModalSub').textContent = events[eventIndex].title + ' \u2014 ' + events[eventIndex].date;
-    const wrap = document.querySelector('.events-track-wrap');
-    const visible = Math.max(1, Math.floor(wrap.offsetWidth / cardWidth));
-    const maxShift = Math.max(0, events.length - visible);
-    const shiftIndex = Math.min(eventIndex, maxShift);
-    eventsTrack.style.transform = `translateX(-${shiftIndex * cardWidth}px)`;
+    const len = events.length;
+    const prev = events[(eventIndex - 1 + len) % len];
+    const curr = events[eventIndex];
+    const next = events[(eventIndex + 1) % len];
+    eventsTrack.innerHTML = [prev, curr, next].map(ev =>
+      `<img src="${ev.img}" alt="${ev.title} flyer">`
+    ).join('');
+    eventTitle.textContent = curr.title;
+    eventDate.textContent = curr.date;
+    document.getElementById('eventModalSub').textContent = curr.title + ' \u2014 ' + curr.date;
   }
   document.getElementById('eventsPrev').addEventListener('click', () => {
     eventIndex = (eventIndex - 1 + events.length) % events.length;
@@ -605,7 +605,6 @@
     eventIndex = (eventIndex + 1) % events.length;
     updateEvents();
   });
-  window.addEventListener('resize', updateEvents);
   updateEvents();
 
   document.getElementById('openEventModal').addEventListener('click', () => openModal('eventModal'));
