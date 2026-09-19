@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braggzz Lounge — Restaurant, Lounge, Nightlife</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600&family=Mirza:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FDF8EC;
+    --ink:#130F0C;
+    --brown:#371501;
+    --brown-light:#8A3401;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'League Spartan', sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{display:block; max-width:100%; height:auto;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none;}
+
+  .container{max-width:1440px; margin:0 auto; padding:0 64px;}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:56px; padding:0 40px;
+    font-size:20px; letter-spacing:0.4px;
+    border-radius:2px; white-space:nowrap;
+    transition:opacity .2s ease, background .2s ease, color .2s ease;
+  }
+  .btn-filled{ background:var(--brown); color:var(--cream); border:1.5px solid var(--brown); }
+  .btn-filled:hover{ opacity:.85; }
+  .btn-outline-dark{ border:1.5px solid var(--brown); color:var(--brown); }
+  .btn-outline-dark:hover{ background:rgba(55,21,1,0.06); }
+  .btn-outline-light{ border:1.5px solid var(--cream); color:var(--cream); }
+  .btn-outline-light:hover{ background:rgba(253,248,236,0.1); }
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:absolute; top:0; left:0; width:100%; z-index:50;
+  }
+  .header-top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:28px 64px; border-bottom:1px solid rgba(253,248,236,0.3);
+  }
+  .hamburger{
+    display:flex; flex-direction:column; gap:5px; width:28px;
+    background:none; border:none; padding:0;
+  }
+  .hamburger span{ display:block; width:100%; height:2px; background:var(--cream); }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-badge{
+    width:48px; height:48px; border-radius:50%;
+    border:1px solid var(--cream);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--cream); font-family:'Mirza', serif; font-size:11px; letter-spacing:1px;
+  }
+  .logo-badge-img{ width:52px; height:52px; object-fit:contain; flex-shrink:0; }
+  .logo-text{
+    font-family:'Mirza', serif; font-weight:500; font-size:26px;
+    letter-spacing:0.6px; color:var(--cream); white-space:nowrap;
+  }
+  .header-nav{
+    display:flex; justify-content:center; gap:8px;
+    padding:14px 64px; border-bottom:1px solid rgba(253,248,236,0.3);
+  }
+  .header-nav a{
+    padding:8px 12px; font-size:18px; letter-spacing:0.4px; color:var(--cream);
+    border-radius:2px; transition:background .2s ease;
+  }
+  .header-nav a:hover{ background:rgba(253,248,236,0.1); }
+
+  /* mobile nav drawer */
+  .mobile-nav{
+    position:fixed; inset:0; background:var(--ink);
+    z-index:100; display:flex; flex-direction:column;
+    padding:28px 32px; transform:translateX(-100%);
+    transition:transform .3s ease;
+  }
+  .mobile-nav.open{ transform:translateX(0); }
+  .mobile-nav-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:48px; }
+  .mobile-nav-close{ color:var(--cream); font-size:28px; line-height:1; background:none; border:none; }
+  .mobile-nav a{
+    color:var(--cream); font-size:28px; padding:16px 0;
+    border-bottom:1px solid rgba(253,248,236,0.15);
+  }
+  .mobile-nav .btn{ margin-top:32px; align-self:flex-start; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative; width:100%; height:100vh; min-height:640px;
+    overflow:hidden; color:var(--cream);
+  }
+  .hero video{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  }
+  .hero::before{
+    content:''; position:absolute; inset:0;
+    background:#371501; opacity:0.35; mix-blend-mode:soft-light;
+  }
+  .hero::after{
+    content:''; position:absolute; inset:0;
+    background:#130F0C; opacity:0.32;
+  }
+  .hero-copy{
+    position:absolute; left:64px; bottom:88px; z-index:2; max-width:900px;
+  }
+  .hero-copy h1{
+    font-size:clamp(40px, 6vw, 88px); font-weight:500; line-height:1.05;
+    letter-spacing:1px;
+  }
+
+  /* ---------- INTRO ---------- */
+  .intro{
+    padding:112px 32px; text-align:center;
+    display:flex; flex-direction:column; align-items:center; gap:40px;
+  }
+  .intro h2{ font-size:clamp(32px, 5vw, 64px); font-weight:500; letter-spacing:1px; max-width:900px; }
+  .intro p{ font-size:20px; line-height:1.4; letter-spacing:0.4px; max-width:820px; color:var(--ink); }
+  .intro .cta-row{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+
+  /* ---------- MARQUEE GALLERY ---------- */
+  .marquee{
+    width:100%; overflow:hidden; padding:24px 0 112px;
+  }
+  .marquee-track{
+    display:flex; gap:16px; width:max-content;
+    animation:scroll 40s linear infinite;
+  }
+  .marquee:hover .marquee-track{ animation-play-state:paused; }
+  .marquee-track img{
+    width:420px; height:340px; object-fit:cover; border-radius:4px; flex-shrink:0;
+  }
+  @keyframes scroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+
+  /* ---------- MENU SPLIT ---------- */
+  .menu-split{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    padding:0 16px 96px;
+  }
+  .menu-card{
+    position:relative; height:560px; border-radius:4px; overflow:hidden;
+    color:var(--cream);
+  }
+  .menu-card img{ width:100%; height:100%; object-fit:cover; }
+  .menu-card::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(19,15,12,0.75), rgba(19,15,12,0) 55%);
+  }
+  .menu-card-copy{
+    position:absolute; left:32px; bottom:32px; z-index:2;
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .menu-card-copy h3{ font-size:clamp(32px, 4vw, 56px); font-weight:500; letter-spacing:1px; }
+  .menu-card-copy a{
+    font-size:20px; font-weight:500; letter-spacing:0.4px;
+    border-bottom:1px solid var(--cream); width:fit-content; padding-bottom:4px;
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact{
+    padding:96px 32px; display:flex; flex-direction:column; align-items:center; gap:56px;
+  }
+  .contact-head{ text-align:center; max-width:700px; display:flex; flex-direction:column; gap:16px; }
+  .contact-head h2{ font-size:clamp(32px, 5vw, 64px); font-weight:400; letter-spacing:1px; }
+  .contact-head p{ font-size:22px; letter-spacing:0.4px; }
+  .contact-grid{
+    width:100%; max-width:1408px; display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  }
+  .contact-map, .contact-info{
+    border-radius:4px; overflow:hidden; min-height:540px;
+  }
+  .contact-map img{ width:100%; height:100%; object-fit:cover; }
+  .contact-info{
+    background:var(--cream);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:32px; padding:48px 24px; text-align:center;
+  }
+  .contact-info h4{ font-size:clamp(24px,3vw,32px); font-weight:400; letter-spacing:0.6px; margin-bottom:12px; }
+  .contact-info p{ font-size:20px; font-weight:300; line-height:1.4; letter-spacing:0.4px; }
+
+  /* ---------- EVENTS ---------- */
+  .events{ padding:96px 64px; }
+  .events-head{ text-align:center; max-width:1100px; margin:0 auto 72px; display:flex; flex-direction:column; gap:16px; }
+  .events-head h2{ font-size:clamp(32px, 5vw, 64px); font-weight:400; letter-spacing:1px; }
+  .events-head p{ font-size:22px; letter-spacing:0.4px; }
+  .events-slider{ display:flex; flex-direction:column; gap:48px; align-items:center; }
+  .events-track-wrap{ width:100%; overflow:hidden; }
+  .events-track{ display:flex; gap:16px; transition:transform .4s ease; width:max-content; }
+  .events-track img{
+    width:420px; height:474px; object-fit:cover; border-radius:4px; flex-shrink:0;
+  }
+  .events-nav{ display:flex; align-items:center; gap:32px; width:100%; max-width:640px; justify-content:center; }
+  .events-arrow{ font-size:28px; color:var(--ink); background:none; }
+  .events-caption{ text-align:center; }
+  .events-caption h3{ font-size:clamp(24px,3vw,36px); font-weight:400; letter-spacing:0.6px; }
+  .events-caption p{ font-size:22px; font-weight:300; letter-spacing:0.4px; margin-top:8px; }
+  .events-reserve{ margin-top:8px; }
+  .btn-small{ height:44px; padding:0 24px; font-size:16px; }
+
+  /* ---------- MODALS ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(19,15,12,0.6); z-index:300;
+    display:none; align-items:center; justify-content:center; padding:24px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-card{
+    background:var(--cream); border-radius:8px; max-width:480px; width:100%;
+    max-height:88vh; overflow-y:auto; padding:40px; position:relative;
+  }
+  .modal-close{ position:absolute; top:16px; right:20px; font-size:26px; color:var(--ink); background:none; }
+  .modal-card h3{ font-size:28px; font-weight:500; letter-spacing:0.5px; margin-bottom:8px; }
+  .modal-card .modal-sub{ font-size:16px; color:rgba(19,15,12,0.65); margin-bottom:24px; }
+  .form-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
+  .form-row label{ font-size:14px; letter-spacing:0.3px; color:rgba(19,15,12,0.7); }
+  .form-row input, .form-row select{
+    height:48px; border:1.5px solid var(--line, rgba(19,15,12,0.12)); border-radius:4px; padding:0 14px;
+    font-size:16px; background:var(--white); font-family:inherit; width:100%;
+  }
+  .modal-submit{ width:100%; margin-top:8px; }
+  .confirm-icon{ font-size:40px; margin-bottom:12px; }
+
+  /* ---------- DELIVERY ---------- */
+  .delivery{ display:grid; grid-template-columns:1fr 1fr; min-height:560px; }
+  .delivery-img{ position:relative; overflow:hidden; }
+  .delivery-img img{ width:100%; height:100%; object-fit:cover; }
+  .delivery-img::after{ content:''; position:absolute; inset:0; background:#130F0C; opacity:0.15; }
+  .delivery-copy{
+    background:var(--cream); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:40px; padding:64px 32px; text-align:center;
+  }
+  .delivery-copy h2{ font-size:clamp(32px,4.5vw,64px); font-weight:500; letter-spacing:1px; margin-bottom:16px; }
+  .delivery-copy .lead{ font-size:22px; line-height:1.4; letter-spacing:0.4px; max-width:460px; }
+  .delivery-copy h4{ font-size:clamp(22px,3vw,32px); font-weight:400; letter-spacing:0.6px; margin-bottom:12px; }
+  .delivery-copy .num{ font-size:20px; font-weight:300; letter-spacing:0.4px; line-height:1.4; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ padding:72px 64px 40px; }
+  .footer-grid{
+    display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:64px; margin-bottom:56px;
+  }
+  .footer-col{ display:flex; flex-direction:column; gap:16px; }
+  .footer-col .eyebrow{ color:var(--brown-light); font-size:15px; letter-spacing:0.32px; }
+  .footer-col a, .footer-col p{ font-size:19px; letter-spacing:0.4px; line-height:1.4; }
+  .footer-rule{ border:none; border-top:1px solid rgba(19,15,12,0.12); margin-bottom:24px; }
+  .footer-copy{ text-align:center; font-size:19px; letter-spacing:0.4px; }
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width:900px){
+    .container{ padding:0 24px; }
+    .header-top{ padding:20px 24px; }
+    .header-nav{ display:none; }
+    .logo-text{ font-size:18px; }
+    .hero-copy{ left:24px; right:24px; bottom:64px; }
+    .intro{ padding:72px 20px; gap:28px; }
+    .marquee-track img{ width:280px; height:220px; }
+    .menu-split{ grid-template-columns:1fr; padding:0 16px 64px; }
+    .menu-card{ height:420px; }
+    .contact{ padding:64px 20px; }
+    .contact-grid{ grid-template-columns:1fr; }
+    .contact-map{ min-height:320px; }
+    .contact-info{ min-height:auto; }
+    .events{ padding:64px 24px; }
+    .events-track img{ width:260px; height:300px; }
+    .delivery{ grid-template-columns:1fr; }
+    .delivery-img{ min-height:320px; }
+    .footer-grid{ grid-template-columns:1fr; gap:32px; margin-bottom:32px; }
+    .modal-card{ padding:28px 20px 32px; max-height:92vh; }
+  }
+  @media (max-width:480px){
+    .hero-copy h1{ font-size:34px; }
+    .btn{ height:50px; padding:0 28px; font-size:17px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ MOBILE NAV DRAWER ============ -->
+<nav class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-top">
+    <div class="logo">
+      <img src="images/braggzz-logo.png" alt="Braggzz Lounge" class="logo-badge-img">
+      <span class="logo-text">BRAGGZZ LOUNGE</span>
+    </div>
+    <button class="mobile-nav-close" id="closeNav" aria-label="Close menu">&times;</button>
+  </div>
+  <a href="menu.html">Menu List</a>
+  <a href="#events">Events</a>
+  <a href="#story">Our Story</a>
+  <a href="#contact">Contact</a>
+  <a href="#book" class="btn btn-outline-light">Book a Table</a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <header>
+    <div class="header-top">
+      <button class="hamburger" id="openNav" aria-label="Open menu"><span></span><span></span><span></span></button>
+      <div class="logo">
+        <img src="images/braggzz-logo.png" alt="Braggzz Lounge" class="logo-badge-img">
+        <span class="logo-text">BRAGGZZ LOUNGE</span>
+      </div>
+      <a href="#book" class="btn btn-outline-light" style="height:44px; padding:0 24px; font-size:16px;">Book a Table</a>
+    </div>
+    <div class="header-nav">
+      <a href="menu.html">Menu List</a>
+      <a href="#events">Events</a>
+      <a href="#story">Our Story</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </header>
+
+  <video autoplay muted loop playsinline poster="https://placehold.co/1920x1080/130F0C/8A3401?text=Braggzz+Lounge">
+    <source src="braggzz-hero.mp4" type="video/mp4">
+  </video>
+
+  <div class="hero-copy">
+    <h1>More Than a Lounge.<br>It's an Experience.</h1>
+  </div>
+</div>
+
+<!-- ============ INTRO ============ -->
+<section class="intro">
+  <h2>Every Visit Deserves a Little Bragging</h2>
+  <p>Discover a destination where bold flavours, signature cocktails, electrifying entertainment, and genuine hospitality come together. At Braggzz Lounge, every visit is an invitation to relax, connect, celebrate, and create lasting memories.</p>
+  <div class="cta-row">
+    <a href="#book" class="btn btn-filled">Book a Table</a>
+    <a href="menu.html" class="btn btn-outline-dark">See Menu List</a>
+  </div>
+</section>
+
+<!-- ============ MARQUEE GALLERY ============ -->
+<div class="marquee">
+  <div class="marquee-track" id="marqueeTrack">
+    <img src="images/lounge-view.png" alt="Braggzz Lounge bar interior">
+    <img src="images/cocktail-pour.png" alt="Signature cocktail being poured">
+    <img src="images/lady-eating.png" alt="Guest enjoying a jollof rice platter">
+    <img src="images/dj-set.png" alt="DJ performing at Braggzz Lounge">
+    <img src="images/grilled-salmon.png" alt="Grilled salmon on the grill">
+    <img src="images/lounge-booth.png" alt="Braggzz Lounge velvet booth seating">
+  </div>
+</div>
+
+<!-- ============ MENU SPLIT ============ -->
+<section class="menu-split" id="menu">
+  <div class="menu-card">
+    <img src="images/menu-drinks.png" alt="Drinks menu">
+    <div class="menu-card-copy">
+      <h3>Drinks Menu</h3>
+      <a href="menu.html">See Menu List</a>
+    </div>
+  </div>
+  <div class="menu-card">
+    <img src="images/menu-food.png" alt="Food menu">
+    <div class="menu-card-copy">
+      <h3>Food Menu</h3>
+      <a href="menu.html">See Menu List</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contact">
+  <div class="contact-head">
+    <h2>Contact</h2>
+    <p>Restaurant. Lounge. Nightlife. Experience the Vibe at Braggzz Lounge</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-map">
+      <img src="images/map.png" alt="Map to Braggzz Lounge">
+    </div>
+    <div class="contact-info">
+      <div>
+        <h4>Address:</h4>
+        <p>Enigwe street by Agape Hospital,<br>Ogbaga Road, Abakaliki 480211</p>
+      </div>
+      <div>
+        <h4>Opening Hours</h4>
+        <p>9:00 AM &ndash; 4:00 AM<br>Everyday of the week</p>
+      </div>
+      <div>
+        <h4>Make a Reservation</h4>
+        <p>+234 123 4567 890<br>reservation@braggzzlounge.com</p>
+      </div>
+      <a href="#book" class="btn btn-filled">Book a Table</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EVENTS ============ -->
+<section class="events" id="events">
+  <div class="events-head">
+    <h2>What&rsquo;s on at Braggzz</h2>
+    <p>Restaurant. Lounge. Nightlife. Experience the Vibe at Braggzz Lounge</p>
+  </div>
+  <div class="events-slider">
+    <div class="events-track-wrap">
+      <div class="events-track" id="eventsTrack">
+        <img src="images/sunday-vibes.png" alt="Sunday Vibes family buffet flyer">
+        <img src="images/karaoke-night.png" alt="Ladies and Karaoke Night flyer">
+        <img src="images/freaky-friday.png" alt="Freaky Friday flyer">
+      </div>
+    </div>
+    <div class="events-nav">
+      <button class="events-arrow" id="eventsPrev" aria-label="Previous event">&#8592;</button>
+      <div class="events-caption">
+        <h3 id="eventTitle">Ladies &amp; Karaoke Night</h3>
+        <p id="eventDate">Every Wednesday, 8:00 PM</p>
+      </div>
+      <button class="events-arrow" id="eventsNext" aria-label="Next event">&#8594;</button>
+    </div>
+    <button class="btn btn-outline-dark btn-small events-reserve" id="openEventModal">Book a Reservation</button>
+  </div>
+</section>
+
+<!-- ============ DELIVERY ============ -->
+<section class="delivery" id="book">
+  <div class="delivery-img">
+    <img src="images/home-delivery.png" alt="Braggzz delivery bag being handed over">
+  </div>
+  <div class="delivery-copy">
+    <div>
+      <h2>Home Delivery</h2>
+      <p class="lead">Experience the vibe from the comfort of your home with our delivery service</p>
+    </div>
+    <div>
+      <h4>Make a Reservation</h4>
+      <p class="num">+234 123 4567 890<br>reservation@braggzzlounge.com</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <span class="eyebrow">Contact</span>
+      <p>Enigwe Street by Agape Hospital, Ogbaga Road,<br>Abakaliki 480211</p>
+      <a href="mailto:info@braggzzlounge.com">info@braggzzlounge.com</a>
+    </div>
+    <div class="footer-col">
+      <span class="eyebrow">Menu</span>
+      <a href="#story">About Braggzz</a>
+      <a href="menu.html">Menu List</a>
+      <a href="#events">Events</a>
+      <a href="#book">Home Delivery</a>
+    </div>
+    <div class="footer-col">
+      <span class="eyebrow">Follow</span>
+      <a href="#" target="_blank" rel="noopener">Instagram</a>
+      <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <hr class="footer-rule">
+  <p class="footer-copy">Braggzz Lounge &copy; All rights reserved</p>
+</footer>
+
+<!-- ============ EVENT RESERVATION MODAL ============ -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal-card">
+    <button class="modal-close" data-close="eventModal" aria-label="Close">&times;</button>
+    <h3>Book a Reservation</h3>
+    <p class="modal-sub" id="eventModalSub">Ladies &amp; Karaoke Night &mdash; Every Wednesday, 8:00 PM</p>
+    <form id="eventForm">
+      <div class="form-row"><label>Full name</label><input type="text" required placeholder="Your name"></div>
+      <div class="form-row"><label>Email</label><input type="email" required placeholder="you@email.com"></div>
+      <div class="form-row"><label>Number of guests</label>
+        <select required>
+          <option value="">Select</option>
+          <option>1</option><option>2</option><option>3-4</option><option>5-8</option><option>9+</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-filled modal-submit">Confirm Reservation</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ CONFIRMATION MODAL ============ -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-card" style="text-align:center;">
+    <button class="modal-close" data-close="confirmModal" aria-label="Close">&times;</button>
+    <div class="confirm-icon">&#10003;</div>
+    <h3 id="confirmTitle">Reservation Confirmed</h3>
+    <p class="modal-sub" id="confirmBody">We've got it covered &mdash; see you soon at Braggzz Lounge.</p>
+    <button class="btn btn-filled modal-submit" data-close="confirmModal">Done</button>
+  </div>
+</div>
+
+<script>
+  // Mobile nav
+  const mobileNav = document.getElementById('mobileNav');
+  document.getElementById('openNav').addEventListener('click', () => mobileNav.classList.add('open'));
+  document.getElementById('closeNav').addEventListener('click', () => mobileNav.classList.remove('open'));
+  mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileNav.classList.remove('open')));
+
+  // Duplicate marquee content for seamless infinite loop
+  const track = document.getElementById('marqueeTrack');
+  track.innerHTML += track.innerHTML;
+
+  // Modal helpers
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.close));
+  });
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.classList.remove('open'); });
+  });
+
+  // Events carousel
+  const events = [
+    { title: "Sunday Vibes Family Buffet", date: "Every Sunday, 3:00 PM" },
+    { title: "Ladies & Karaoke Night", date: "Every Wednesday, 8:00 PM" },
+    { title: "Freaky Friday", date: "Every Friday, 10:00 PM" }
+  ];
+  let eventIndex = 1;
+  const eventTitle = document.getElementById('eventTitle');
+  const eventDate = document.getElementById('eventDate');
+  const eventsTrack = document.getElementById('eventsTrack');
+  const cardWidth = 420 + 16; // width + gap
+
+  function updateEvents(){
+    eventTitle.textContent = events[eventIndex].title;
+    eventDate.textContent = events[eventIndex].date;
+    document.getElementById('eventModalSub').textContent = events[eventIndex].title + ' \u2014 ' + events[eventIndex].date;
+    const wrap = document.querySelector('.events-track-wrap');
+    const visible = Math.max(1, Math.floor(wrap.offsetWidth / cardWidth));
+    const maxShift = Math.max(0, events.length - visible);
+    const shiftIndex = Math.min(eventIndex, maxShift);
+    eventsTrack.style.transform = `translateX(-${shiftIndex * cardWidth}px)`;
+  }
+  document.getElementById('eventsPrev').addEventListener('click', () => {
+    eventIndex = (eventIndex - 1 + events.length) % events.length;
+    updateEvents();
+  });
+  document.getElementById('eventsNext').addEventListener('click', () => {
+    eventIndex = (eventIndex + 1) % events.length;
+    updateEvents();
+  });
+  window.addEventListener('resize', updateEvents);
+  updateEvents();
+  document.getElementById('openEventModal').addEventListener('click', () => openModal('eventModal'));
+  document.getElementById('eventForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    closeModal('eventModal');
+    document.getElementById('confirmTitle').textContent = 'Reservation Confirmed';
+    document.getElementById('confirmBody').textContent = `You're on the list for ${events[eventIndex].title}. See you there!`;
+    openModal('confirmModal');
+    this.reset();
+  });
+</script>
+
+</body>
+</html>

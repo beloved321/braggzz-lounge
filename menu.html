@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braggzz Menu List — Braggzz Lounge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600&family=Mirza:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FDF8EC; --ink:#130F0C; --brown:#371501; --brown-light:#8A3401; --white:#FFFFFF;
+    --line: rgba(19,15,12,0.12);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{ font-family:'League Spartan', sans-serif; background:var(--cream); color:var(--ink); overflow-x:hidden; }
+  a{color:inherit; text-decoration:none;}
+  img{display:block; max-width:100%; height:auto;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none;}
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:56px; padding:0 40px; font-size:20px; letter-spacing:0.4px;
+    border-radius:2px; white-space:nowrap;
+    transition:opacity .2s ease, background .2s ease, color .2s ease;
+  }
+  .btn-filled{ background:var(--brown); color:var(--cream); border:1.5px solid var(--brown); }
+  .btn-filled:hover{ opacity:.85; }
+  .btn-outline-dark{ border:1.5px solid var(--brown); color:var(--brown); }
+  .btn-outline-dark:hover{ background:rgba(55,21,1,0.06); }
+  .btn-outline-light{ border:1.5px solid var(--cream); color:var(--cream); }
+  .btn-outline-light:hover{ background:rgba(253,248,236,0.1); }
+  .btn-small{ height:44px; padding:0 24px; font-size:16px; }
+
+  /* ---------- HEADER (solid, not overlaid on image) ---------- */
+  header{ background:var(--ink); }
+  .header-top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 64px; border-bottom:1px solid rgba(253,248,236,0.15);
+  }
+  .hamburger{ display:flex; flex-direction:column; gap:5px; width:28px; background:none; border:none; padding:0; }
+  .hamburger span{ display:block; width:100%; height:2px; background:var(--cream); }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-badge-img{ width:48px; height:48px; object-fit:contain; flex-shrink:0; }
+  .logo-text{ font-family:'Mirza', serif; font-weight:500; font-size:24px; letter-spacing:0.6px; color:var(--cream); white-space:nowrap; }
+
+  .page-title{ text-align:center; padding:56px 24px 32px; }
+  .page-title h1{ font-size:clamp(32px,5vw,56px); font-weight:500; letter-spacing:1px; }
+
+  .tab-row{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:20px 24px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    position:relative; flex-wrap:wrap;
+  }
+  .cat-tab{
+    padding:10px 18px; font-size:18px; letter-spacing:0.3px; color:rgba(19,15,12,0.55);
+    border-radius:2px; transition:color .2s ease;
+  }
+  .cat-tab.active{ color:var(--ink); font-weight:600; border-bottom:2px solid var(--brown); }
+  .order-trigger{
+    position:absolute; right:64px; top:50%; transform:translateY(-50%);
+    display:flex; align-items:center; gap:8px; font-size:18px; letter-spacing:0.3px;
+  }
+  .order-badge{
+    background:var(--brown); color:var(--cream); font-size:13px; border-radius:50%;
+    width:20px; height:20px; display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---------- MOBILE NAV ---------- */
+  .mobile-nav{
+    position:fixed; inset:0; background:var(--ink); z-index:200;
+    display:flex; flex-direction:column; padding:28px 32px;
+    transform:translateX(-100%); transition:transform .3s ease;
+  }
+  .mobile-nav.open{ transform:translateX(0); }
+  .mobile-nav-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:48px; }
+  .mobile-nav-close{ color:var(--cream); font-size:28px; line-height:1; background:none; border:none; }
+  .mobile-nav a{ color:var(--cream); font-size:26px; padding:14px 0; border-bottom:1px solid rgba(253,248,236,0.15); }
+  .mobile-nav .btn{ margin-top:32px; align-self:flex-start; }
+
+  /* ---------- MENU CONTENT ---------- */
+  .menu-panel{ display:none; padding:56px 64px 16px; max-width:1280px; margin:0 auto; }
+  .menu-panel.active{ display:block; }
+  .cat-group{ margin-bottom:56px; }
+  .cat-group h2{ text-align:center; font-size:clamp(24px,3vw,32px); font-weight:500; letter-spacing:0.5px; margin-bottom:28px; }
+  .cat-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; }
+  .item-card{
+    background:var(--cream); border:1px solid #E8E8E8; border-radius:6px;
+    padding:20px; display:flex; flex-direction:column; gap:10px; text-align:center;
+  }
+  .item-card .icon{ width:56px; height:56px; object-fit:contain; margin:0 auto 4px; }
+  .item-card .name{ font-size:18px; font-weight:600; }
+  .item-card .desc{ font-size:14px; line-height:1.4; color:rgba(19,15,12,0.6); min-height:38px; }
+  .item-card .price{ font-size:17px; font-weight:600; margin-top:4px; }
+  .qty-row{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:10px; padding-top:14px; border-top:1px solid #E8E8E8;
+  }
+  .qty-btn{
+    width:30px; height:30px; border-radius:50%; border:1.5px solid var(--brown);
+    color:var(--brown); font-size:17px; display:flex; align-items:center; justify-content:center; line-height:1;
+  }
+  .qty-btn:hover{ background:rgba(55,21,1,0.08); }
+  .qty-val{ font-size:17px; min-width:16px; text-align:center; }
+  .empty-panel{ text-align:center; padding:64px 24px; color:rgba(19,15,12,0.55); font-size:20px; }
+
+  /* ---------- EVENTS (shared with homepage) ---------- */
+  .events{ padding:96px 64px; }
+  .events-head{ text-align:center; max-width:1100px; margin:0 auto 72px; display:flex; flex-direction:column; gap:16px; }
+  .events-head h2{ font-size:clamp(32px, 5vw, 64px); font-weight:400; letter-spacing:1px; }
+  .events-head p{ font-size:22px; letter-spacing:0.4px; }
+  .events-slider{ display:flex; flex-direction:column; gap:40px; align-items:center; }
+  .events-track-wrap{ width:100%; overflow:hidden; }
+  .events-track{ display:flex; gap:16px; transition:transform .4s ease; width:max-content; }
+  .events-track img{ width:420px; height:474px; object-fit:cover; border-radius:4px; flex-shrink:0; }
+  .events-nav{ display:flex; align-items:center; gap:32px; width:100%; max-width:640px; justify-content:center; }
+  .events-arrow{ font-size:28px; color:var(--ink); background:none; }
+  .events-caption{ text-align:center; }
+  .events-caption h3{ font-size:clamp(24px,3vw,36px); font-weight:400; letter-spacing:0.6px; }
+  .events-caption p{ font-size:22px; font-weight:300; letter-spacing:0.4px; margin-top:8px; }
+  .events-reserve{ margin-top:8px; }
+
+  /* ---------- DELIVERY (split layout) ---------- */
+  .delivery{ display:grid; grid-template-columns:1fr 1fr; min-height:560px; }
+  .delivery-img{ position:relative; overflow:hidden; }
+  .delivery-img img{ width:100%; height:100%; object-fit:cover; }
+  .delivery-img::after{ content:''; position:absolute; inset:0; background:#130F0C; opacity:0.15; }
+  .delivery-copy{
+    background:var(--cream); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:40px; padding:64px 32px; text-align:center;
+  }
+  .delivery-copy h2{ font-size:clamp(32px,4.5vw,64px); font-weight:500; letter-spacing:1px; margin-bottom:16px; }
+  .delivery-copy .lead{ font-size:22px; line-height:1.4; letter-spacing:0.4px; max-width:460px; }
+  .delivery-copy h4{ font-size:clamp(22px,3vw,32px); font-weight:400; letter-spacing:0.6px; margin-bottom:12px; }
+  .delivery-copy .num{ font-size:20px; font-weight:300; letter-spacing:0.4px; line-height:1.4; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ padding:72px 64px 40px; }
+  .footer-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:64px; margin-bottom:56px; }
+  .footer-col{ display:flex; flex-direction:column; gap:16px; }
+  .footer-col .eyebrow{ color:var(--brown-light); font-size:15px; letter-spacing:0.32px; }
+  .footer-col a, .footer-col p{ font-size:19px; letter-spacing:0.4px; line-height:1.4; }
+  .footer-rule{ border:none; border-top:1px solid var(--line); margin-bottom:24px; }
+  .footer-copy{ text-align:center; font-size:19px; letter-spacing:0.4px; }
+
+  /* ---------- MODALS (order summary) ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(19,15,12,0.6); z-index:300;
+    display:none; align-items:center; justify-content:center; padding:24px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-card{
+    background:var(--cream); border-radius:8px; max-width:480px; width:100%;
+    max-height:88vh; overflow-y:auto; padding:40px; position:relative;
+  }
+  .modal-close{ position:absolute; top:16px; right:20px; font-size:26px; color:var(--ink); background:none; }
+  .modal-card h3{ font-size:28px; font-weight:500; letter-spacing:0.5px; margin-bottom:8px; }
+  .modal-card .modal-sub{ font-size:16px; color:rgba(19,15,12,0.65); margin-bottom:24px; }
+  .order-line{ display:flex; justify-content:space-between; font-size:16px; gap:8px; padding:6px 0; }
+  .order-empty{ font-size:16px; color:rgba(19,15,12,0.55); }
+  .order-total{ display:flex; justify-content:space-between; font-size:20px; font-weight:600; border-top:1px solid var(--line); padding-top:16px; margin-top:8px; }
+  .form-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
+  .form-row label{ font-size:14px; letter-spacing:0.3px; color:rgba(19,15,12,0.7); }
+  .form-row input, .form-row select{
+    height:48px; border:1.5px solid var(--line); border-radius:4px; padding:0 14px; font-size:16px; background:var(--white); width:100%; font-family:inherit;
+  }
+  .modal-submit{ width:100%; margin-top:16px; }
+  .confirm-icon{ font-size:40px; margin-bottom:12px; }
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width:900px){
+    .header-top{ padding:20px 24px; }
+    .logo-text{ font-size:17px; }
+    .tab-row{ gap:4px; padding:16px 16px 44px; }
+    .cat-tab{ font-size:15px; padding:8px 10px; }
+    .order-trigger{ position:static; transform:none; justify-content:center; margin-top:12px; width:100%; }
+    .menu-panel{ padding:40px 20px 8px; }
+    .cat-grid{ grid-template-columns:1fr 1fr; gap:14px; }
+    .events{ padding:64px 24px; }
+    .events-track img{ width:260px; height:300px; }
+    .delivery{ grid-template-columns:1fr; }
+    .delivery-img{ min-height:320px; }
+    .footer-grid{ grid-template-columns:1fr; gap:32px; margin-bottom:32px; }
+    .modal-card{ padding:28px 20px 32px; max-height:92vh; }
+  }
+  @media (max-width:480px){
+    .cat-grid{ grid-template-columns:1fr; }
+    .btn{ height:50px; padding:0 28px; font-size:17px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ MOBILE NAV DRAWER ============ -->
+<nav class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-top">
+    <div class="logo">
+      <img src="images/braggzz-logo.png" alt="Braggzz Lounge" class="logo-badge-img">
+      <span class="logo-text">BRAGGZZ LOUNGE</span>
+    </div>
+    <button class="mobile-nav-close" id="closeNav" aria-label="Close menu">&times;</button>
+  </div>
+  <a href="index.html">Home</a>
+  <a href="index.html#events">Events</a>
+  <a href="index.html#contact">Contact</a>
+  <a href="index.html#book" class="btn btn-outline-light">Book a Table</a>
+</nav>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="header-top">
+    <button class="hamburger" id="openNav" aria-label="Open menu"><span></span><span></span><span></span></button>
+    <a href="index.html" class="logo">
+      <img src="images/braggzz-logo.png" alt="Braggzz Lounge" class="logo-badge-img">
+      <span class="logo-text">BRAGGZZ LOUNGE</span>
+    </a>
+    <a href="index.html#book" class="btn btn-outline-light btn-small">Book a Table</a>
+  </div>
+</header>
+
+<div class="page-title">
+  <h1>Braggzz Menu List</h1>
+</div>
+
+<div class="tab-row">
+  <button class="cat-tab" data-panel="food">Food Menu</button>
+  <button class="cat-tab active" data-panel="cocktail">Cocktail</button>
+  <button class="cat-tab" data-panel="mocktail">Mocktail</button>
+  <button class="cat-tab" data-panel="open-lounge">Open Lounge</button>
+  <button class="cat-tab" data-panel="vip-lounge">VIP Lounge</button>
+  <button class="order-trigger" id="openOrderModal">
+    <span>&#128717;</span> Order <span class="order-badge" id="orderBadge">0</span>
+  </button>
+</div>
+
+<!-- ============ FOOD MENU (placeholder) ============ -->
+<div class="menu-panel" id="panel-food">
+  <p class="empty-panel">Food menu items are coming soon &mdash; send over the dishes and prices and I'll build this tab out the same way as Cocktail and Mocktail.</p>
+</div>
+
+<!-- ============ COCKTAIL MENU ============ -->
+<div class="menu-panel active" id="panel-cocktail">
+  <div class="cat-group">
+    <h2>Signature Cocktails</h2>
+    <div class="cat-grid" data-cat="signature-cocktails"></div>
+  </div>
+  <div class="cat-group">
+    <h2>Classic Cocktails</h2>
+    <div class="cat-grid" data-cat="classic-cocktails"></div>
+  </div>
+  <div class="cat-group">
+    <h2>Tropical Cocktails</h2>
+    <div class="cat-grid" data-cat="tropical-cocktails"></div>
+  </div>
+  <div class="cat-group">
+    <h2>Margarita Collection</h2>
+    <div class="cat-grid" data-cat="margarita-collection"></div>
+  </div>
+  <div class="cat-group">
+    <h2>Refreshing Cocktail</h2>
+    <div class="cat-grid" data-cat="refreshing-cocktail"></div>
+  </div>
+  <div class="cat-group">
+    <h2>Party Cocktails</h2>
+    <div class="cat-grid" data-cat="party-cocktails"></div>
+  </div>
+</div>
+
+<!-- ============ MOCKTAIL MENU ============ -->
+<div class="menu-panel" id="panel-mocktail">
+  <div class="cat-group">
+    <h2>Braggzz Margarita Collection</h2>
+    <div class="cat-grid" data-cat="mocktail-collection"></div>
+  </div>
+</div>
+
+<!-- ============ OPEN LOUNGE (placeholder) ============ -->
+<div class="menu-panel" id="panel-open-lounge">
+  <p class="empty-panel">Open Lounge menu is coming soon &mdash; send the items and prices whenever you have them.</p>
+</div>
+
+<!-- ============ VIP LOUNGE (placeholder) ============ -->
+<div class="menu-panel" id="panel-vip-lounge">
+  <p class="empty-panel">VIP Lounge menu is coming soon &mdash; send the items and prices whenever you have them.</p>
+</div>
+
+<!-- ============ EVENTS ============ -->
+<section class="events" id="events">
+  <div class="events-head">
+    <h2>What&rsquo;s on at Braggzz</h2>
+    <p>Restaurant. Lounge. Nightlife. Experience the Vibe at Braggzz Lounge</p>
+  </div>
+  <div class="events-slider">
+    <div class="events-track-wrap">
+      <div class="events-track" id="eventsTrack">
+        <img src="images/sunday-vibes.png" alt="Sunday Vibes family buffet flyer">
+        <img src="images/karaoke-night.png" alt="Ladies and Karaoke Night flyer">
+        <img src="images/freaky-friday.png" alt="Freaky Friday flyer">
+      </div>
+    </div>
+    <div class="events-nav">
+      <button class="events-arrow" id="eventsPrev" aria-label="Previous event">&#8592;</button>
+      <div class="events-caption">
+        <h3 id="eventTitle">Ladies &amp; Karaoke Night</h3>
+        <p id="eventDate">Every Wednesday, 8:00 PM</p>
+      </div>
+      <button class="events-arrow" id="eventsNext" aria-label="Next event">&#8594;</button>
+    </div>
+    <button class="btn btn-outline-dark btn-small events-reserve" id="openEventModal">Book a Reservation</button>
+  </div>
+</section>
+
+<!-- ============ DELIVERY ============ -->
+<section class="delivery">
+  <div class="delivery-img">
+    <img src="images/home-delivery.png" alt="Braggzz delivery bag being handed over">
+  </div>
+  <div class="delivery-copy">
+    <div>
+      <h2>Home Delivery</h2>
+      <p class="lead">Experience the vibe from the comfort of your home with our delivery service</p>
+    </div>
+    <div>
+      <h4>Make a Reservation</h4>
+      <p class="num">+234 123 4567 890<br>reservation@braggzzlounge.com</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <span class="eyebrow">Contact</span>
+      <p>Enigwe Street by Agape Hospital, Ogbaga Road,<br>Abakaliki 480211</p>
+      <a href="mailto:info@braggzzlounge.com">info@braggzzlounge.com</a>
+    </div>
+    <div class="footer-col">
+      <span class="eyebrow">Menu</span>
+      <a href="index.html">About Braggzz</a>
+      <a href="menu.html">Menu List</a>
+      <a href="index.html#events">Events</a>
+      <a href="index.html#book">Home Delivery</a>
+    </div>
+    <div class="footer-col">
+      <span class="eyebrow">Follow</span>
+      <a href="#" target="_blank" rel="noopener">Instagram</a>
+      <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <hr class="footer-rule">
+  <p class="footer-copy">Braggzz Lounge &copy; All rights reserved</p>
+</footer>
+
+<!-- ============ ORDER SUMMARY MODAL ============ -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal-card">
+    <button class="modal-close" data-close="orderModal" aria-label="Close">&times;</button>
+    <h3>Your Order</h3>
+    <p class="modal-sub">Reserve these ahead and they'll be ready when you arrive.</p>
+    <div id="orderLines"><p class="order-empty">No items yet &mdash; use the + on any drink to add it.</p></div>
+    <div class="order-total" id="orderTotalRow" style="display:none;"><span>Total</span><span id="orderTotal">₦0</span></div>
+    <form id="orderForm">
+      <div class="form-row" style="margin-top:20px;"><label>Full name</label><input type="text" required placeholder="Your name"></div>
+      <div class="form-row"><label>Email</label><input type="email" required placeholder="you@email.com"></div>
+      <button type="submit" class="btn btn-filled modal-submit" id="orderSubmitBtn" disabled>Reserve This Order</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ EVENT RESERVATION MODAL ============ -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal-card">
+    <button class="modal-close" data-close="eventModal" aria-label="Close">&times;</button>
+    <h3>Book a Reservation</h3>
+    <p class="modal-sub" id="eventModalSub">Ladies &amp; Karaoke Night &mdash; Every Wednesday, 8:00 PM</p>
+    <form id="eventForm">
+      <div class="form-row"><label>Full name</label><input type="text" required placeholder="Your name"></div>
+      <div class="form-row"><label>Email</label><input type="email" required placeholder="you@email.com"></div>
+      <div class="form-row"><label>Number of guests</label>
+        <select required>
+          <option value="">Select</option>
+          <option>1</option><option>2</option><option>3-4</option><option>5-8</option><option>9+</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-filled modal-submit">Confirm Reservation</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ CONFIRMATION MODAL ============ -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-card" style="text-align:center;">
+    <button class="modal-close" data-close="confirmModal" aria-label="Close">&times;</button>
+    <div class="confirm-icon">&#10003;</div>
+    <h3 id="confirmTitle">Reservation Confirmed</h3>
+    <p class="modal-sub" id="confirmBody">We've got it covered &mdash; see you soon at Braggzz Lounge.</p>
+    <button class="btn btn-filled modal-submit" data-close="confirmModal">Done</button>
+  </div>
+</div>
+
+<script>
+  /* ---------- Mobile nav ---------- */
+  const mobileNav = document.getElementById('mobileNav');
+  document.getElementById('openNav').addEventListener('click', () => mobileNav.classList.add('open'));
+  document.getElementById('closeNav').addEventListener('click', () => mobileNav.classList.remove('open'));
+  mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileNav.classList.remove('open')));
+
+  /* ---------- Modal helpers ---------- */
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.classList.remove('open'); });
+  });
+  function formatNaira(n){ return '\u20a6' + n.toLocaleString(); }
+
+  /* ---------- Tabs ---------- */
+  const tabs = document.querySelectorAll('.cat-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    });
+  });
+
+  /* ---------- Menu data ---------- */
+  const ICON = 'images/drink-icon.png';
+  const MENU = {
+    'signature-cocktails': [
+      { name:'Classic Debbie (25cl)', desc:'Gin, fresh lemon juice, simple syrup and soda water. Crisp, citrusy and refreshing.', price:10000 },
+      { name:'Hi-Way (25cl)', desc:'Gin, Orange Juice, Vodka, Tequila, Green barrett, Grenadine, schnapps. Fruity, balanced and refreshing.', price:10000 },
+      { name:'Mazi (25cl)', desc:'Mashed bitter cola, Tequila, Vodka, schnapps, Sprite, bitters. Bitter sweet and refreshing.', price:10000 },
+      { name:'Lady of the Night (25cl)', desc:'Vodka, Tequila, Triple sec, Schnapps, Lime juice, Elbenz, Grenadine, satisfying complexity.', price:10000 },
+      { name:'Big Daddy (25cl)', desc:'Vodka, Tequila, Dark Rum and Predator come together in a bold, smooth cocktail with a strong finish.', price:10000 }
+    ],
+    'classic-cocktails': [
+      { name:'Tom Collins (25cl)', desc:'Gin, fresh lemon juice, simple syrup and soda water. Crisp, citrusy and refreshing.', price:10000 },
+      { name:'Classic Daiquiri (25cl)', desc:'White rum, fresh lime juice and simple syrup. Clean, balanced and timeless.', price:10000 },
+      { name:'Classic Martini (25cl)', desc:'Gin or vodka with dry vermouth. Smooth, dry and sophisticated.', price:10000 },
+      { name:'Negroni (25cl)', desc:'Gin, Campari and sweet vermouth. Bold, bittersweet and aromatic.', price:10000 },
+      { name:'Vesper Martini (25cl)', desc:'Gin, vodka and Lillet Blanc. Strong, crisp and elegantly dry.', price:10000 },
+      { name:'Metropolitan (25cl)', desc:'Brandy, sweet vermouth and bitters. Rich, smooth and spirit-forward.', price:10000 }
+    ],
+    'tropical-cocktails': [
+      { name:'Pi\u00f1a Colada (25cl)', desc:'White rum, coconut cream and pineapple juice. Creamy, tropical and refreshing.', price:10000 },
+      { name:'Tequila Sunrise (25cl)', desc:'Tequila, orange juice and grenadine. Bright, fruity and refreshing.', price:10000 },
+      { name:'Painkiller (25cl)', desc:'Dark rum, pineapple juice, orange juice and coconut cream. Rich, creamy and tropical.', price:10000 },
+      { name:'Zombie (25cl)', desc:'A blend of premium rums, tropical fruit juices and house syrups. Bold, fruity and powerful.', price:10000 }
+    ],
+    'margarita-collection': [
+      { name:'Blue Margarita (25cl)', desc:'Tequila, blue cura\u00e7ao and fresh lime juice. Vibrant, citrusy and refreshing.', price:10000 },
+      { name:'Frozen Blue Margarita (25cl)', desc:'A frozen blend of tequila, blue cura\u00e7ao and lime. Smooth, icy and refreshing.', price:10000 }
+    ],
+    'refreshing-cocktail': [
+      { name:'Mojito (25cl)', desc:'White rum, fresh mint, lime, sugar and soda water. Cool, refreshing and zesty.', price:10000 }
+    ],
+    'party-cocktails': [
+      { name:'Long Island Iced Tea (25cl)', desc:'Vodka, gin, rum, tequila, triple sec, lemon juice and cola. Strong, balanced and iconic.', price:10000 },
+      { name:'Adios Motherf**ker (25cl)', desc:'Vodka, gin, rum, tequila, blue cura\u00e7ao, lemon-lime soda and citrus. Strong, vibrant and refreshing.', price:10000 },
+      { name:'Irish Trash Can (25cl)', desc:'Vodka, gin, rum, tequila, blue cura\u00e7ao, peach schnapps, triple sec and an energy drink. Bold and unforgettable.', price:10000 },
+      { name:'Sex on the Beach (25cl)', desc:'Vodka, peach schnapps, cranberry juice and orange juice. Fruity, smooth and easy to enjoy.', price:10000 }
+    ],
+    'mocktail-collection': [
+      { name:'Virgin Mojito (25cl)', desc:'Fresh mint, lime, sugar and soda water. Crisp, cool and refreshing.', price:10000 },
+      { name:'Virgin Pi\u00f1a Colada (25cl)', desc:'Coconut cream and pineapple juice blended to perfection. Rich, creamy and tropical.', price:10000 },
+      { name:'Shirley Temple (25cl)', desc:'Grenadine, lemon-lime soda and a splash of citrus. Sweet, bright and refreshing.', price:10000 },
+      { name:'Cinderella (25cl)', desc:'Orange, pineapple and lemon juices with a hint of grenadine. Fruity and refreshing.', price:10000 },
+      { name:'Nojito (25cl)', desc:'Fresh mint, lime and soda without the rum. Light, zesty and refreshing.', price:10000 },
+      { name:'Virgin Strawberry Daiquiri (25cl)', desc:'Fresh strawberries, lime and crushed ice blended until smooth. Sweet and refreshing.', price:10000 },
+      { name:'Sunrise Cooler (25cl)', desc:'Orange juice, grenadine and sparkling soda. Bright, fruity and refreshing.', price:10000 },
+      { name:'Blue Lagoon (25cl)', desc:'Blue cura\u00e7ao syrup, lemonade and citrus. Vibrant, sweet and refreshing.', price:10000 },
+      { name:'Passion Fruit Cooler (25cl)', desc:'Passion fruit, lime and sparkling soda. Tropical with a tangy finish.', price:10000 },
+      { name:'Mango Mint Cooler (25cl)', desc:'Fresh mango, mint and lime blended over ice. Smooth and refreshing.', price:10000 },
+      { name:'Tropical Paradise (25cl)', desc:'A blend of pineapple, mango and orange juices with a splash of coconut. Fruity and exotic.', price:10000 },
+      { name:'Rainbow Paradise (25cl)', desc:'A colourful blend of tropical fruit juices, citrus and grenadine. Bright, fruity and refreshing.', price:10000 },
+      { name:'Watermelon Cooler (25cl)', desc:'Fresh watermelon, lime and mint. Light, juicy and refreshing.', price:10000 },
+      { name:'Berry Blast (25cl)', desc:'A mix of berries, lemon and sparkling soda. Sweet, vibrant and refreshing.', price:10000 },
+      { name:'Pineapple Ginger Fizz (25cl)', desc:'Fresh pineapple, ginger and soda water. Tropical with a gentle spicy kick.', price:10000 },
+      { name:'Citrus Cooler (25cl)', desc:'Orange, lemon and lime juices topped with sparkling soda. Bright, crisp and refreshing.', price:10000 }
+    ]
+  };
+
+  const cart = {}; // key: "cat|name" -> qty
+
+  function renderMenu(){
+    Object.keys(MENU).forEach(cat => {
+      const grid = document.querySelector(`.cat-grid[data-cat="${cat}"]`);
+      if(!grid) return;
+      grid.innerHTML = MENU[cat].map(item => {
+        const key = cat + '|' + item.name;
+        const qty = cart[key] || 0;
+        return `
+        <div class="item-card">
+          <img class="icon" src="${ICON}" alt="${item.name}">
+          <div class="name">${item.name}</div>
+          <div class="desc">${item.desc}</div>
+          <div class="price">${formatNaira(item.price)}</div>
+          <div class="qty-row">
+            <button class="qty-btn" data-action="dec" data-key="${key}">&minus;</button>
+            <span class="qty-val" id="qty-${key.replace(/[^a-zA-Z0-9]/g,'_')}">${qty}</span>
+            <button class="qty-btn" data-action="inc" data-key="${key}">+</button>
+          </div>
+        </div>`;
+      }).join('');
+    });
+    document.querySelectorAll('.qty-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.key;
+        const current = cart[key] || 0;
+        if(btn.dataset.action === 'inc'){ cart[key] = current + 1; }
+        else { cart[key] = Math.max(0, current - 1); if(cart[key] === 0) delete cart[key]; }
+        const safeId = key.replace(/[^a-zA-Z0-9]/g,'_');
+        document.getElementById('qty-' + safeId).textContent = cart[key] || 0;
+        renderOrderBadge();
+      });
+    });
+  }
+
+  function allItemsFlat(){
+    const flat = [];
+    Object.keys(MENU).forEach(cat => MENU[cat].forEach(item => flat.push({ key: cat + '|' + item.name, ...item })));
+    return flat;
+  }
+
+  function renderOrderBadge(){
+    const count = Object.values(cart).reduce((a,b) => a+b, 0);
+    document.getElementById('orderBadge').textContent = count;
+  }
+
+  function renderOrderModal(){
+    const all = allItemsFlat();
+    const entries = Object.keys(cart).filter(k => cart[k] > 0);
+    const linesEl = document.getElementById('orderLines');
+    const totalRow = document.getElementById('orderTotalRow');
+    const totalEl = document.getElementById('orderTotal');
+    const submitBtn = document.getElementById('orderSubmitBtn');
+    if(entries.length === 0){
+      linesEl.innerHTML = '<p class="order-empty">No items yet &mdash; use the + on any drink to add it.</p>';
+      totalRow.style.display = 'none';
+      submitBtn.disabled = true;
+      return;
+    }
+    let total = 0, html = '';
+    entries.forEach(key => {
+      const item = all.find(i => i.key === key);
+      const qty = cart[key];
+      total += item.price * qty;
+      html += `<div class="order-line"><span>${qty}\u00d7 ${item.name}</span><span>${formatNaira(item.price*qty)}</span></div>`;
+    });
+    linesEl.innerHTML = html;
+    totalRow.style.display = 'flex';
+    totalEl.textContent = formatNaira(total);
+    submitBtn.disabled = false;
+  }
+
+  document.getElementById('openOrderModal').addEventListener('click', () => {
+    renderOrderModal();
+    openModal('orderModal');
+  });
+  document.getElementById('orderForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    closeModal('orderModal');
+    Object.keys(cart).forEach(k => delete cart[k]);
+    renderMenu(); renderOrderBadge();
+    this.reset();
+    document.getElementById('confirmTitle').textContent = 'Order Reserved';
+    document.getElementById('confirmBody').textContent = 'Your order will be ready and waiting when you arrive. A confirmation has been sent to your email.';
+    openModal('confirmModal');
+  });
+
+  renderMenu();
+  renderOrderBadge();
+
+  /* ---------- Events carousel ---------- */
+  const events = [
+    { title: "Sunday Vibes Family Buffet", date: "Every Sunday, 3:00 PM" },
+    { title: "Ladies & Karaoke Night", date: "Every Wednesday, 8:00 PM" },
+    { title: "Freaky Friday", date: "Every Friday, 10:00 PM" }
+  ];
+  let eventIndex = 1;
+  const eventTitle = document.getElementById('eventTitle');
+  const eventDate = document.getElementById('eventDate');
+  const eventsTrack = document.getElementById('eventsTrack');
+  const cardWidth = 420 + 16;
+
+  function updateEvents(){
+    eventTitle.textContent = events[eventIndex].title;
+    eventDate.textContent = events[eventIndex].date;
+    document.getElementById('eventModalSub').textContent = events[eventIndex].title + ' \u2014 ' + events[eventIndex].date;
+    const wrap = document.querySelector('.events-track-wrap');
+    const visible = Math.max(1, Math.floor(wrap.offsetWidth / cardWidth));
+    const maxShift = Math.max(0, events.length - visible);
+    const shiftIndex = Math.min(eventIndex, maxShift);
+    eventsTrack.style.transform = `translateX(-${shiftIndex * cardWidth}px)`;
+  }
+  document.getElementById('eventsPrev').addEventListener('click', () => {
+    eventIndex = (eventIndex - 1 + events.length) % events.length;
+    updateEvents();
+  });
+  document.getElementById('eventsNext').addEventListener('click', () => {
+    eventIndex = (eventIndex + 1) % events.length;
+    updateEvents();
+  });
+  window.addEventListener('resize', updateEvents);
+  updateEvents();
+
+  document.getElementById('openEventModal').addEventListener('click', () => openModal('eventModal'));
+  document.getElementById('eventForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    closeModal('eventModal');
+    document.getElementById('confirmTitle').textContent = 'Reservation Confirmed';
+    document.getElementById('confirmBody').textContent = `You're on the list for ${events[eventIndex].title}. See you there!`;
+    openModal('confirmModal');
+    this.reset();
+  });
+</script>
+
+</body>
+</html>
