@@ -34,7 +34,7 @@
   .btn-small{ height:44px; padding:0 24px; font-size:16px; }
 
   /* ---------- HEADER (solid, not overlaid on image) ---------- */
-  header{ background:var(--ink); }
+  header{ background:var(--brown); position:fixed; top:0; left:0; width:100%; z-index:100; }
   .header-top{
     display:flex; align-items:center; justify-content:space-between;
     padding:24px 64px; border-bottom:1px solid rgba(253,248,236,0.15);
@@ -51,7 +51,7 @@
   .tab-row{
     display:flex; align-items:center; justify-content:center; gap:8px;
     padding:20px 24px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-    position:relative; flex-wrap:wrap;
+    position:sticky; z-index:90; background:var(--cream); flex-wrap:wrap;
   }
   .cat-tab{
     padding:10px 18px; font-size:18px; letter-spacing:0.3px; color:rgba(19,15,12,0.55);
@@ -400,11 +400,32 @@
 </div>
 
 <script>
+  /* ---------- Fixed header + sticky tab-row ---------- */
+  const siteHeader = document.querySelector('header');
+  const tabRow = document.querySelector('.tab-row');
+  function positionStickyBars(){
+    const headerH = siteHeader.offsetHeight;
+    tabRow.style.top = headerH + 'px';
+    document.body.style.paddingTop = headerH + 'px';
+  }
+  window.addEventListener('resize', positionStickyBars);
+  window.addEventListener('load', positionStickyBars);
+  positionStickyBars();
+
   /* ---------- Mobile nav ---------- */
   const mobileNav = document.getElementById('mobileNav');
-  document.getElementById('openNav').addEventListener('click', () => mobileNav.classList.add('open'));
-  document.getElementById('closeNav').addEventListener('click', () => mobileNav.classList.remove('open'));
-  mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileNav.classList.remove('open')));
+  document.getElementById('openNav').addEventListener('click', () => {
+    mobileNav.classList.add('open');
+    siteHeader.style.visibility = 'hidden';
+  });
+  document.getElementById('closeNav').addEventListener('click', () => {
+    mobileNav.classList.remove('open');
+    siteHeader.style.visibility = 'visible';
+  });
+  mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileNav.classList.remove('open');
+    siteHeader.style.visibility = 'visible';
+  }));
 
   /* ---------- Modal helpers ---------- */
   function openModal(id){ document.getElementById(id).classList.add('open'); }
